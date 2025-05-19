@@ -117,7 +117,7 @@ const ResourceDashboard = () => {
   const economicResources = useMemo(() => {
     // Filter out military units and preserve the order from sortedResources
     return sortedResources.filter(r => !isMilitaryUnit(r));
-  }, [sortedResources]);
+  }, [sortedResources]);;
 
   // Further filter resources by search term
   const searchFilteredResources = useMemo(() => {
@@ -317,7 +317,7 @@ const ResourceDashboard = () => {
     }
     
     return resources;
-  }, [searchFilteredResources, sortConfig, resourceMatrix]);
+  }, [searchFilteredResources, sortConfig, resourceMatrix]);;
       resources.sort((a, b) => {
         const aTotal = resourceMatrix[a]?.total || 0;
         const bTotal = resourceMatrix[b]?.total || 0;
