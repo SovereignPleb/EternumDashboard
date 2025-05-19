@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { gameData, lastUpdated } from './gameData';
 import MilitaryUnitsSummary from './components/MilitaryUnitsSummary';
 
 // Define a standardized resource order
@@ -19,6 +18,19 @@ const resourceOrder = [
   "Lords", "Labor", "AncientFragment", "Wheat", "Fish"
 ];
 
+// Define realm order (realm number mapping)
+const realmOrder = {
+  "Oolusoolip": 1,
+  "it-Pus": 2,
+  "Kokmrukmom": 3,
+  "Chozhdukzhor": 4, 
+  "Nangpen": 5,
+  "Nutnutnutnil": 6,
+  "Ukum Säl": 7,
+  "Lismáksisté": 8,
+  "pu-Muhmuh": 9
+};
+
 // Check if a resource is a military unit
 const isMilitaryUnit = (resourceName) => {
   return [
@@ -29,17 +41,36 @@ const isMilitaryUnit = (resourceName) => {
 };
 
 const ResourceDashboard = () => {
-  const [activeTab, setActiveTab] = useState('resources'); // Default to Resources View
+  // State for tabs: 'data-entry', 'resources', 'military'
+  const [activeTab, setActiveTab] = useState('data-entry');
   const [sortConfig, setSortConfig] = useState({
     key: 'resource',
     direction: 'ascending'
   });
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // State for storing game data
+  const [gameData, setGameData] = useState([]);
+  const [lastUpdated, setLastUpdated] = useState(new Date().toISOString());
+  
+  // State for JSON input
+  const [jsonInput, setJsonInput] = useState('');
+  const [jsonError, setJsonError] = useState('');
 
-  // Get sorted realms alphabetically instead of using predefined order
+  // Get all realms dynamically from gameData
+  const allRealms = useMemo(() => {
+    return gameData.map(realm => ({
+      entityId: realm.entityId,
+      name: realm.name
+    }));
+  }, [gameData]);
+
+  // Sort realms alphabetically by default
   const sortedRealms = useMemo(() => {
-    return [...gameData].sort((a, b) => a.name.localeCompare(b.name));
-  }, []);
+    return [...allRealms].sort((a, b) => 
+      (realmOrder[a.name] || 999) - (realmOrder[b.name] || 999)
+    );
+  }, [allRealms]);
 
   // Get all unique resource names from the data
   const allResources = useMemo(() => {
@@ -50,7 +81,7 @@ const ResourceDashboard = () => {
       });
     });
     return Array.from(resourceSet);
-  }, []);
+  }, [gameData]);
 
   // Sort resources according to the defined order
   const sortedResources = useMemo(() => {
@@ -102,8 +133,13 @@ const ResourceDashboard = () => {
       matrix[resource] = {};
       
       sortedRealms.forEach(realm => {
-        const resourceData = realm.resources.find(r => r.name === resource);
-        matrix[resource][realm.name] = resourceData ? resourceData.totalAmount : 0;
+        const realmData = gameData.find(r => r.entityId === realm.entityId);
+        if (realmData) {
+          const resourceData = realmData.resources.find(r => r.name === resource);
+          matrix[resource][realm.name] = resourceData ? resourceData.totalAmount : 0;
+        } else {
+          matrix[resource][realm.name] = 0;
+        }
       });
       
       // Add total for this resource
@@ -111,7 +147,97 @@ const ResourceDashboard = () => {
     });
     
     return matrix;
-  }, [sortedResources, sortedRealms]);
+  }, [sortedResources, sortedRealms, gameData]);
+
+  // Handle JSON data submission
+  const handleJsonSubmit = (e) => {
+    e.preventDefault();
+    try {
+      const parsedData = JSON.parse(jsonInput);
+      
+      // Validate expected structure (array of realms with resources)
+      if (!Array.isArray(parsedData)) {
+        throw new Error('Data must be an array of realms');
+      }
+      
+      // Basic validation of each realm
+      parsedData.forEach((realm, index) => {
+        if (!realm.entityId) {
+          throw new Error(`Realm at index ${index} is missing entityId`);
+        }
+        if (!realm.name) {
+          throw new Error(`Realm at index ${index} is missing name`);
+        }
+        if (!Array.isArray(realm.resources)) {
+          throw new Error(`Realm "${realm.name}" has invalid resources (not an array)`);
+        }
+      });
+      
+      // Set the data and update timestamp
+      setGameData(parsedData);
+      setLastUpdated(new Date().toISOString());
+      setJsonError('');
+      
+      // Switch to resources tab if successful
+      setActiveTab('resources');
+    } catch (error) {
+      setJsonError(`Error parsing JSON: ${error.message}`);
+    }
+  };
+
+  // Function to load sample data
+  const loadSampleData = () => {
+    // Sample data with a minimal structure
+    const sampleData = [
+      {
+        "entityId": 1,
+        "name": "Sample Realm 1",
+        "resources": [
+          {
+            "name": "Wood",
+            "totalAmount": 1000
+          },
+          {
+            "name": "Stone",
+            "totalAmount": 500
+          },
+          {
+            "name": "Knight",
+            "totalAmount": 100
+          }
+        ]
+      },
+      {
+        "entityId": 2,
+        "name": "Sample Realm 2",
+        "resources": [
+          {
+            "name": "Wood",
+            "totalAmount": 750
+          },
+          {
+            "name": "Copper",
+            "totalAmount": 250
+          },
+          {
+            "name": "Crossbowman",
+            "totalAmount": 50
+          }
+        ]
+      }
+    ];
+    
+    setJsonInput(JSON.stringify(sampleData, null, 2));
+  };
+  
+  // Function to clear all data
+  const clearData = () => {
+    if (window.confirm('Are you sure you want to clear all data?')) {
+      setGameData([]);
+      setJsonInput('');
+      setActiveTab('data-entry');
+    }
+  };
 
   // Function to handle column header click for sorting
   const handleSort = (key) => {
@@ -177,10 +303,19 @@ const ResourceDashboard = () => {
   const renderTabHeader = () => (
     <div className="flex border-b border-gray-300 dark:border-gray-700 mb-6">
       <button 
+        className={`py-2 px-4 ${activeTab === 'data-entry' 
+          ? 'text-blue-500 border-b-2 border-blue-500 font-medium' 
+          : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
+        onClick={() => setActiveTab('data-entry')}
+      >
+        Data Entry
+      </button>
+      <button 
         className={`py-2 px-4 ${activeTab === 'resources' 
           ? 'text-blue-500 border-b-2 border-blue-500 font-medium' 
           : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
         onClick={() => setActiveTab('resources')}
+        disabled={gameData.length === 0}
       >
         Resources View
       </button>
@@ -189,6 +324,7 @@ const ResourceDashboard = () => {
           ? 'text-blue-500 border-b-2 border-blue-500 font-medium' 
           : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
         onClick={() => setActiveTab('military')}
+        disabled={gameData.length === 0}
       >
         Military Units
       </button>
@@ -212,6 +348,70 @@ const ResourceDashboard = () => {
     </div>
   );
 
+  // Render Data Entry tab
+  const renderDataEntry = () => (
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+      <h2 className="text-xl font-bold mb-4">Enter Game Data</h2>
+      <p className="mb-4 text-gray-600 dark:text-gray-400">
+        Paste your JSON data below. The data should be an array of realms, with each realm having a name, entityId, and a resources array.
+      </p>
+      
+      <div className="flex space-x-2 mb-4">
+        <button 
+          onClick={loadSampleData}
+          className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+        >
+          Load Sample Data
+        </button>
+        <button 
+          onClick={clearData}
+          className="px-4 py-2 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-100 rounded hover:bg-red-200 dark:hover:bg-red-800"
+          disabled={gameData.length === 0}
+        >
+          Clear Data
+        </button>
+      </div>
+      
+      <form onSubmit={handleJsonSubmit}>
+        <div className="mb-4">
+          <label htmlFor="jsonInput" className="block text-sm font-medium mb-1">JSON Data</label>
+          <textarea
+            id="jsonInput"
+            value={jsonInput}
+            onChange={(e) => setJsonInput(e.target.value)}
+            rows={15}
+            className="w-full p-2 border rounded font-mono text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+            placeholder='[
+  {
+    "entityId": 1,
+    "name": "Realm Name",
+    "resources": [
+      {
+        "name": "Wood",
+        "totalAmount": 1000
+      }
+    ]
+  }
+]'
+          />
+        </div>
+        
+        {jsonError && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-100 rounded">
+            {jsonError}
+          </div>
+        )}
+        
+        <button 
+          type="submit"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Load Data
+        </button>
+      </form>
+    </div>
+  );
+
   const renderResourcesTable = () => (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
@@ -226,14 +426,15 @@ const ResourceDashboard = () => {
             {sortedRealms.map(realm => (
               <th 
                 key={realm.entityId}
-                className="px-4 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 text-right sticky top-0 bg-gray-100 dark:bg-gray-700"
+                className="px-4 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 text-right"
                 onClick={() => handleSort(realm.name)}
               >
                 {realm.name} {sortConfig.key === realm.name && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+                <div className="text-xs text-gray-500">({realmOrder[realm.name] || '?'})</div>
               </th>
             ))}
             <th 
-              className="px-4 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 text-right font-bold sticky top-0 right-0 bg-gray-100 dark:bg-gray-700"
+              className="px-4 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 text-right font-bold"
               onClick={() => handleSort('total')}
             >
               Total {sortConfig.key === 'total' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
@@ -293,53 +494,62 @@ const ResourceDashboard = () => {
     
     return (
       <>
-        {/* Military Units Summary Component */}
-        <MilitaryUnitsSummary />
+        {/* Military Units Summary Component - Pass gameData as prop */}
+        <MilitaryUnitsSummary gameData={gameData} />
         
         {/* Military Units Table */}
         <div className="overflow-x-auto mb-8">
           <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
-            <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0 z-10">
+            <thead className="bg-gray-100 dark:bg-gray-700">
               <tr>
-                <th className="px-4 py-2 text-left sticky left-0 top-0 bg-gray-100 dark:bg-gray-700 z-20">Unit Type</th>
+                <th className="px-4 py-2 text-left">Unit Type</th>
                 {sortedRealms.map(realm => (
-                  <th key={realm.entityId} className="px-4 py-2 text-right sticky top-0 bg-gray-100 dark:bg-gray-700">
+                  <th key={realm.entityId} className="px-4 py-2 text-right">
                     {realm.name}
+                    <div className="text-xs text-gray-500">({realmOrder[realm.name] || '?'})</div>
                   </th>
                 ))}
-                <th className="px-4 py-2 text-right font-bold sticky top-0 right-0 bg-gray-100 dark:bg-gray-700">Total</th>
+                <th className="px-4 py-2 text-right font-bold">Total</th>
               </tr>
             </thead>
             <tbody>
-              {militaryUnits.map((unit, index) => {
-                const unitClass = unit.includes('Knight') 
-                  ? 'bg-red-50 dark:bg-red-900/20' 
-                  : unit.includes('Crossbowman') 
-                    ? 'bg-blue-50 dark:bg-blue-900/20' 
-                    : 'bg-green-50 dark:bg-green-900/20';
-                
-                return (
-                  <tr 
-                    key={unit} 
-                    className={`${unitClass} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`}
-                  >
-                    <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-inherit z-10">
-                      {unit}
-                    </td>
-                    {sortedRealms.map(realm => (
-                      <td 
-                        key={`${unit}-${realm.name}`} 
-                        className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-right"
-                      >
-                        {formatNumber(resourceMatrix[unit]?.[realm.name] || 0)}
+              {militaryUnits.length > 0 ? (
+                militaryUnits.map((unit, index) => {
+                  const unitClass = unit.includes('Knight') 
+                    ? 'bg-red-50 dark:bg-red-900/20' 
+                    : unit.includes('Crossbowman') 
+                      ? 'bg-blue-50 dark:bg-blue-900/20' 
+                      : 'bg-green-50 dark:bg-green-900/20';
+                  
+                  return (
+                    <tr 
+                      key={unit} 
+                      className={`${unitClass} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`}
+                    >
+                      <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium">
+                        {unit}
                       </td>
-                    ))}
-                    <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-right font-bold">
-                      {formatNumber(resourceMatrix[unit]?.total || 0)}
-                    </td>
-                  </tr>
-                );
-              })}
+                      {sortedRealms.map(realm => (
+                        <td 
+                          key={`${unit}-${realm.name}`} 
+                          className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-right"
+                        >
+                          {formatNumber(resourceMatrix[unit]?.[realm.name] || 0)}
+                        </td>
+                      ))}
+                      <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-right font-bold">
+                        {formatNumber(resourceMatrix[unit]?.total || 0)}
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={sortedRealms.length + 2} className="px-4 py-4 text-center text-gray-500 dark:text-gray-400">
+                    No military units found in the current data
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -438,19 +648,46 @@ const ResourceDashboard = () => {
     );
   };
 
+  // Show a notice when no data is available
+  const renderNoDataMessage = () => (
+    <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 p-6 rounded-lg text-center">
+      <h3 className="text-lg font-medium text-yellow-800 dark:text-yellow-200 mb-2">No Data Available</h3>
+      <p className="text-yellow-700 dark:text-yellow-300">
+        Please go to the Data Entry tab to input your game data.
+      </p>
+      <button
+        onClick={() => setActiveTab('data-entry')}
+        className="mt-4 px-4 py-2 bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-100 rounded hover:bg-yellow-200 dark:hover:bg-yellow-700"
+      >
+        Go to Data Entry
+      </button>
+    </div>
+  );
+
   return (
-    <div className="p-4 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <h1 className="text-2xl font-bold mb-4">Realm Resources Dashboard</h1>
-      <p className="text-gray-500 dark:text-gray-400 mb-4">Last updated: {new Date(lastUpdated).toLocaleString()}</p>
+    <div className="p-4 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold mb-2">Eternum Dashboard</h1>
+      <p className="text-xl italic text-gray-600 dark:text-gray-400 mb-4">Your Empire, m'Lord</p>
+      <p className="text-gray-500 dark:text-gray-400 mb-4">
+        Last updated: {new Date(lastUpdated).toLocaleString()}
+      </p>
       
       {renderTabHeader()}
-      {renderSearch()}
       
-      {activeTab === 'resources' ? renderResourcesTable() : renderMilitaryUnits()}
-      
-      <div className="mt-6 text-center text-gray-500 dark:text-gray-400 text-sm">
-        <p>Showing {searchFilteredResources.length} resources across {sortedRealms.length} realms</p>
-      </div>
+      {activeTab === 'data-entry' ? (
+        renderDataEntry()
+      ) : gameData.length === 0 ? (
+        renderNoDataMessage()
+      ) : (
+        <>
+          {renderSearch()}
+          {activeTab === 'resources' ? renderResourcesTable() : renderMilitaryUnits()}
+          
+          <div className="mt-6 text-center text-gray-500 dark:text-gray-400 text-sm">
+            <p>Showing {searchFilteredResources.length} resources across {sortedRealms.length} realms</p>
+          </div>
+        </>
+      )}
     </div>
   );
 };
