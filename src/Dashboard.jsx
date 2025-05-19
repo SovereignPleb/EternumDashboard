@@ -89,13 +89,20 @@ const ResourceDashboard = () => {
       const aIndex = resourceOrder.indexOf(a);
       const bIndex = resourceOrder.indexOf(b);
       
+      // Both resources are in the predefined order
       if (aIndex !== -1 && bIndex !== -1) {
         return aIndex - bIndex;
-      } else if (aIndex !== -1) {
+      } 
+      // Only resource 'a' is in the predefined order
+      else if (aIndex !== -1) {
         return -1;
-      } else if (bIndex !== -1) {
+      } 
+      // Only resource 'b' is in the predefined order
+      else if (bIndex !== -1) {
         return 1;
-      } else {
+      } 
+      // Neither resource is in the predefined order, fall back to alphabetical
+      else {
         return a.localeCompare(b);
       }
     });
@@ -108,7 +115,7 @@ const ResourceDashboard = () => {
 
   // Get economic resources
   const economicResources = useMemo(() => {
-    // Filter out military units
+    // Filter out military units and preserve the order from sortedResources
     return sortedResources.filter(r => !isMilitaryUnit(r));
   }, [sortedResources]);
 
@@ -291,6 +298,26 @@ const ResourceDashboard = () => {
         }
       });
     } else if (sortConfig.key === 'total') {
+      resources.sort((a, b) => {
+        const aTotal = resourceMatrix[a]?.total || 0;
+        const bTotal = resourceMatrix[b]?.total || 0;
+        return sortConfig.direction === 'ascending' 
+          ? aTotal - bTotal 
+          : bTotal - aTotal;
+      });
+    } else {
+      // Sorting by a specific realm column
+      resources.sort((a, b) => {
+        const aValue = resourceMatrix[a]?.[sortConfig.key] || 0;
+        const bValue = resourceMatrix[b]?.[sortConfig.key] || 0;
+        return sortConfig.direction === 'ascending' 
+          ? aValue - bValue 
+          : bValue - aValue;
+      });
+    }
+    
+    return resources;
+  }, [searchFilteredResources, sortConfig, resourceMatrix]);
       resources.sort((a, b) => {
         const aTotal = resourceMatrix[a]?.total || 0;
         const bTotal = resourceMatrix[b]?.total || 0;
