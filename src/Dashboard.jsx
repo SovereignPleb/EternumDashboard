@@ -263,15 +263,28 @@ const ResourceDashboard = () => {
         const aIndex = resourceOrder.indexOf(a);
         const bIndex = resourceOrder.indexOf(b);
         
+        // Both resources are in the predefined order
         if (aIndex !== -1 && bIndex !== -1) {
+          // When ascending, lower index (earlier in the resourceOrder array) comes first
+          // When descending, higher index (later in the resourceOrder array) comes first
           return sortConfig.direction === 'ascending' 
             ? aIndex - bIndex 
             : bIndex - aIndex;
-        } else if (aIndex !== -1) {
+        } 
+        // Only resource 'a' is in the predefined order
+        else if (aIndex !== -1) {
+          // When ascending, defined resources come before undefined ones
+          // When descending, defined resources come after undefined ones
           return sortConfig.direction === 'ascending' ? -1 : 1;
-        } else if (bIndex !== -1) {
+        } 
+        // Only resource 'b' is in the predefined order
+        else if (bIndex !== -1) {
+          // When ascending, undefined resources come after defined ones
+          // When descending, undefined resources come before defined ones
           return sortConfig.direction === 'ascending' ? 1 : -1;
-        } else {
+        } 
+        // Neither resource is in the predefined order, fall back to alphabetical
+        else {
           return sortConfig.direction === 'ascending' 
             ? a.localeCompare(b) 
             : b.localeCompare(a);
