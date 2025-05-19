@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
-import { gameData } from '../gameData';
 
 /**
  * A component that displays a summary of military units organized by type and tier.
  * Shows totals for each unit type and tier combination.
+ * @param {Object} props - Component props
+ * @param {Array} props.gameData - Array of realm data objects
  */
-const MilitaryUnitsSummary = () => {
+const MilitaryUnitsSummary = ({ gameData = [] }) => {
   // Calculate totals for each unit type and tier
   const militarySummary = useMemo(() => {
     const summary = {
@@ -15,7 +16,14 @@ const MilitaryUnitsSummary = () => {
       totals: { T1: 0, T2: 0, T3: 0, grandTotal: 0 }
     };
     
+    // Handle case where gameData is undefined or empty
+    if (!gameData || gameData.length === 0) {
+      return summary;
+    }
+    
     gameData.forEach(realm => {
+      if (!realm.resources) return;
+      
       realm.resources.forEach(resource => {
         // Process Knights
         if (resource.name === "Knight") {
@@ -72,12 +80,24 @@ const MilitaryUnitsSummary = () => {
     });
     
     return summary;
-  }, []);
+  }, [gameData]);
   
   // Helper function to format numbers with commas
   const formatNumber = num => {
     return num.toLocaleString();
   };
+  
+  // If there's no military data at all, show a simple message
+  if (militarySummary.totals.grandTotal === 0) {
+    return (
+      <div className="mb-6">
+        <h2 className="text-xl font-bold mb-3">Military Units Summary</h2>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-300 dark:border-gray-700">
+          <p className="text-gray-500 dark:text-gray-400">No military units found in the current data.</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="mb-6">
