@@ -18,19 +18,6 @@ const resourceOrder = [
   "Lords", "Labor", "AncientFragment", "Wheat", "Fish"
 ];
 
-// Define realm order (realm number mapping)
-const realmOrder = {
-  "Oolusoolip": 1,
-  "it-Pus": 2,
-  "Kokmrukmom": 3,
-  "Chozhdukzhor": 4, 
-  "Nangpen": 5,
-  "Nutnutnutnil": 6,
-  "Ukum Säl": 7,
-  "Lismáksisté": 8,
-  "pu-Muhmuh": 9
-};
-
 // Check if a resource is a military unit
 const isMilitaryUnit = (resourceName) => {
   // Normalize the resource name
@@ -68,12 +55,21 @@ const ResourceDashboard = () => {
     }));
   }, [gameData]);
 
-  // Sort realms alphabetically by default
+  // Generate realm order dynamically based on loaded data
+  const realmOrder = useMemo(() => {
+    const order = {};
+    allRealms.forEach((realm, index) => {
+      order[realm.name] = index + 1;
+    });
+    return order;
+  }, [allRealms]);
+
+  // Sort realms by their order
   const sortedRealms = useMemo(() => {
     return [...allRealms].sort((a, b) => 
       (realmOrder[a.name] || 999) - (realmOrder[b.name] || 999)
     );
-  }, [allRealms]);
+  }, [allRealms, realmOrder]);
 
   // Get all unique resource names from the data
   const allResources = useMemo(() => {
@@ -483,7 +479,7 @@ const ResourceDashboard = () => {
                 onClick={() => handleSort(realm.name)}
               >
                 {realm.name} {sortConfig.key === realm.name && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
-                <div className="text-xs text-gray-500">({realmOrder[realm.name] || '?'})</div>
+                <div className="text-xs text-gray-500">({realmOrder[realm.name]})</div>
               </th>
             ))}
             <th 
@@ -559,7 +555,7 @@ const ResourceDashboard = () => {
                 {sortedRealms.map(realm => (
                   <th key={realm.entityId} className="px-4 py-2 text-right">
                     {realm.name}
-                    <div className="text-xs text-gray-500">({realmOrder[realm.name] || '?'})</div>
+                    <div className="text-xs text-gray-500">({realmOrder[realm.name]})</div>
                   </th>
                 ))}
                 <th className="px-4 py-2 text-right font-bold">Total</th>
@@ -614,7 +610,7 @@ const ResourceDashboard = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-bold text-red-500">Knights</h4>
             {groupedUnits.Knight.map(unit => (
-              <div key={unit} className={`bg-white dark:bg-gray-800 p-4 rounded-lg border-l-4 ${unitColors[unit]} border border-gray-300 dark:border-gray-700 shadow`}>
+              <div key={unit} className={`bg-white dark:bg-gray-800 p-4 rounded-lg border-l-4 ${unitColors[unit] || 'border-red-500'} border border-gray-300 dark:border-gray-700 shadow`}>
                 <h3 className="font-bold text-lg mb-2">{unit}</h3>
                 <div className="space-y-2">
                   {sortedRealms.filter(realm => {
@@ -643,7 +639,7 @@ const ResourceDashboard = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-bold text-blue-500">Crossbowmen</h4>
             {groupedUnits.Crossbowman.map(unit => (
-              <div key={unit} className={`bg-white dark:bg-gray-800 p-4 rounded-lg border-l-4 ${unitColors[unit]} border border-gray-300 dark:border-gray-700 shadow`}>
+              <div key={unit} className={`bg-white dark:bg-gray-800 p-4 rounded-lg border-l-4 ${unitColors[unit] || 'border-blue-500'} border border-gray-300 dark:border-gray-700 shadow`}>
                 <h3 className="font-bold text-lg mb-2">{unit}</h3>
                 <div className="space-y-2">
                   {sortedRealms.filter(realm => {
@@ -672,7 +668,7 @@ const ResourceDashboard = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-bold text-green-500">Paladins</h4>
             {groupedUnits.Paladin.map(unit => (
-              <div key={unit} className={`bg-white dark:bg-gray-800 p-4 rounded-lg border-l-4 ${unitColors[unit]} border border-gray-300 dark:border-gray-700 shadow`}>
+              <div key={unit} className={`bg-white dark:bg-gray-800 p-4 rounded-lg border-l-4 ${unitColors[unit] || 'border-green-500'} border border-gray-300 dark:border-gray-700 shadow`}>
                 <h3 className="font-bold text-lg mb-2">{unit}</h3>
                 <div className="space-y-2">
                   {sortedRealms.filter(realm => {
