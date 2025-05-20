@@ -102,20 +102,20 @@ const MilitaryUnitsSummary = ({ gameData = [] }) => {
   return (
     <div className="mb-6">
       <h2 className="text-xl font-bold mb-3">Military Units Summary</h2>
-      <div className="overflow-auto">
+      <div className="overflow-auto" style={{ position: 'relative' }}>
         <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden table-fixed">
-          <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0 z-20">
+          <thead style={{ position: 'sticky', top: 0 }} className="bg-gray-100 dark:bg-gray-700 z-20">
             <tr>
-              <th className="px-4 py-2 text-left sticky left-0 top-0 bg-gray-100 dark:bg-gray-700 z-30 w-48">Unit Type</th>
-              <th className="px-4 py-2 text-right">Tier 1</th>
-              <th className="px-4 py-2 text-right">Tier 2</th>
-              <th className="px-4 py-2 text-right">Tier 3</th>
-              <th className="px-4 py-2 text-right font-bold">Total</th>
+              <th style={{ position: 'sticky', top: 0, left: 0 }} className="px-4 py-2 text-left bg-gray-100 dark:bg-gray-700 z-30 w-48">Unit Type</th>
+              <th style={{ position: 'sticky', top: 0 }} className="px-4 py-2 text-right bg-gray-100 dark:bg-gray-700">Tier 1</th>
+              <th style={{ position: 'sticky', top: 0 }} className="px-4 py-2 text-right bg-gray-100 dark:bg-gray-700">Tier 2</th>
+              <th style={{ position: 'sticky', top: 0 }} className="px-4 py-2 text-right bg-gray-100 dark:bg-gray-700">Tier 3</th>
+              <th style={{ position: 'sticky', top: 0 }} className="px-4 py-2 text-right font-bold bg-gray-100 dark:bg-gray-700">Total</th>
             </tr>
           </thead>
           <tbody>
             <tr className="bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-gray-50 dark:bg-gray-900 z-20 w-48">Knight</td>
+              <td style={{ position: 'sticky', left: 0 }} className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium bg-gray-50 dark:bg-gray-900 z-20 w-48">Knight</td>
               <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-right">
                 {formatNumber(militarySummary.Knight.T1)}
               </td>
@@ -130,7 +130,7 @@ const MilitaryUnitsSummary = ({ gameData = [] }) => {
               </td>
             </tr>
             <tr className="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-white dark:bg-gray-800 z-20 w-48">Crossbowman</td>
+              <td style={{ position: 'sticky', left: 0 }} className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium bg-white dark:bg-gray-800 z-20 w-48">Crossbowman</td>
               <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-right">
                 {formatNumber(militarySummary.Crossbowman.T1)}
               </td>
@@ -145,7 +145,7 @@ const MilitaryUnitsSummary = ({ gameData = [] }) => {
               </td>
             </tr>
             <tr className="bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-gray-50 dark:bg-gray-900 z-20 w-48">Paladin</td>
+              <td style={{ position: 'sticky', left: 0 }} className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium bg-gray-50 dark:bg-gray-900 z-20 w-48">Paladin</td>
               <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-right">
                 {formatNumber(militarySummary.Paladin.T1)}
               </td>
@@ -160,7 +160,7 @@ const MilitaryUnitsSummary = ({ gameData = [] }) => {
               </td>
             </tr>
             <tr className="bg-gray-200 dark:bg-gray-600 font-bold">
-              <td className="px-4 py-2 border-t border-gray-300 dark:border-gray-500 sticky left-0 bg-gray-200 dark:bg-gray-600 z-20 w-48">TOTAL</td>
+              <td style={{ position: 'sticky', left: 0 }} className="px-4 py-2 border-t border-gray-300 dark:border-gray-500 bg-gray-200 dark:bg-gray-600 z-20 w-48">TOTAL</td>
               <td className="px-4 py-2 border-t border-gray-300 dark:border-gray-500 text-right">
                 {formatNumber(militarySummary.totals.T1)}
               </td>
