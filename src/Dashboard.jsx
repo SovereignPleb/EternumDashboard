@@ -117,7 +117,7 @@ const ResourceDashboard = () => {
   const economicResources = useMemo(() => {
     // Filter out military units and preserve the order from sortedResources
     return sortedResources.filter(r => !isMilitaryUnit(r));
-  }, [sortedResources]);;
+  }, [sortedResources]);
 
   // Further filter resources by search term
   const searchFilteredResources = useMemo(() => {
@@ -298,26 +298,6 @@ const ResourceDashboard = () => {
         }
       });
     } else if (sortConfig.key === 'total') {
-      resources.sort((a, b) => {
-        const aTotal = resourceMatrix[a]?.total || 0;
-        const bTotal = resourceMatrix[b]?.total || 0;
-        return sortConfig.direction === 'ascending' 
-          ? aTotal - bTotal 
-          : bTotal - aTotal;
-      });
-    } else {
-      // Sorting by a specific realm column
-      resources.sort((a, b) => {
-        const aValue = resourceMatrix[a]?.[sortConfig.key] || 0;
-        const bValue = resourceMatrix[b]?.[sortConfig.key] || 0;
-        return sortConfig.direction === 'ascending' 
-          ? aValue - bValue 
-          : bValue - aValue;
-      });
-    }
-    
-    return resources;
-  }, [searchFilteredResources, sortConfig, resourceMatrix]);;
       resources.sort((a, b) => {
         const aTotal = resourceMatrix[a]?.total || 0;
         const bTotal = resourceMatrix[b]?.total || 0;
