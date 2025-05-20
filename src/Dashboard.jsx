@@ -44,8 +44,8 @@ const ResourceDashboard = () => {
   // State for tabs: 'data-entry', 'resources', 'military'
   const [activeTab, setActiveTab] = useState('data-entry');
   const [sortConfig, setSortConfig] = useState({
-    key: 'resource',
-    direction: 'ascending'
+    key: 'resource',  // Default to sorting by resource name
+    direction: 'ascending'  // Default to ascending order
   });
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -85,7 +85,14 @@ const ResourceDashboard = () => {
 
   // Sort resources according to the defined order
   const sortedResources = useMemo(() => {
-    return [...allResources].sort((a, b) => {
+    // Return empty array if no resources
+    if (allResources.length === 0) return [];
+    
+    // Create a new array to avoid modifying the original
+    const resources = [...allResources];
+    
+    // First, sort all resources based on the predefined order
+    resources.sort((a, b) => {
       const aIndex = resourceOrder.indexOf(a);
       const bIndex = resourceOrder.indexOf(b);
       
@@ -106,16 +113,19 @@ const ResourceDashboard = () => {
         return a.localeCompare(b);
       }
     });
+    
+    return resources;
   }, [allResources]);
 
-  // Get military units
+  // Get military units - ensure we preserve the order
   const militaryUnits = useMemo(() => {
+    // Create a new array with only military units, preserving the original order
     return sortedResources.filter(r => isMilitaryUnit(r));
   }, [sortedResources]);
 
-  // Get economic resources
+  // Get economic resources - ensure we preserve the order
   const economicResources = useMemo(() => {
-    // Filter out military units and preserve the order from sortedResources
+    // Create a new array with non-military resources, preserving the original order
     return sortedResources.filter(r => !isMilitaryUnit(r));
   }, [sortedResources]);
 
@@ -263,8 +273,10 @@ const ResourceDashboard = () => {
 
   // Sorted resources based on current sort configuration
   const sortedResourceRows = useMemo(() => {
+    // Start with filtered resources
     let resources = [...searchFilteredResources];
     
+    // If sorting by resource name, apply resource order
     if (sortConfig.key === 'resource') {
       resources.sort((a, b) => {
         const aIndex = resourceOrder.indexOf(a);
@@ -272,32 +284,35 @@ const ResourceDashboard = () => {
         
         // Both resources are in the predefined order
         if (aIndex !== -1 && bIndex !== -1) {
-          // When ascending, lower index (earlier in the resourceOrder array) comes first
-          // When descending, higher index (later in the resourceOrder array) comes first
+          // When ascending, use the order defined in resourceOrder
+          // When descending, reverse that order
           return sortConfig.direction === 'ascending' 
             ? aIndex - bIndex 
             : bIndex - aIndex;
         } 
         // Only resource 'a' is in the predefined order
         else if (aIndex !== -1) {
-          // When ascending, defined resources come before undefined ones
-          // When descending, defined resources come after undefined ones
+          // Predefined resources come first in ascending order
+          // Predefined resources come last in descending order
           return sortConfig.direction === 'ascending' ? -1 : 1;
         } 
         // Only resource 'b' is in the predefined order
         else if (bIndex !== -1) {
-          // When ascending, undefined resources come after defined ones
-          // When descending, undefined resources come before defined ones
+          // Predefined resources come first in ascending order
+          // Predefined resources come last in descending order
           return sortConfig.direction === 'ascending' ? 1 : -1;
         } 
-        // Neither resource is in the predefined order, fall back to alphabetical
+        // Neither resource is in the predefined order
         else {
+          // Fall back to alphabetical
           return sortConfig.direction === 'ascending' 
             ? a.localeCompare(b) 
             : b.localeCompare(a);
         }
       });
-    } else if (sortConfig.key === 'total') {
+    } 
+    // If sorting by total, sort by total resource amounts
+    else if (sortConfig.key === 'total') {
       resources.sort((a, b) => {
         const aTotal = resourceMatrix[a]?.total || 0;
         const bTotal = resourceMatrix[b]?.total || 0;
@@ -305,8 +320,9 @@ const ResourceDashboard = () => {
           ? aTotal - bTotal 
           : bTotal - aTotal;
       });
-    } else {
-      // Sorting by a specific realm column
+    } 
+    // If sorting by a realm column, sort by realm-specific amounts
+    else {
       resources.sort((a, b) => {
         const aValue = resourceMatrix[a]?.[sortConfig.key] || 0;
         const bValue = resourceMatrix[b]?.[sortConfig.key] || 0;
