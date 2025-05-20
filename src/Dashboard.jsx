@@ -493,7 +493,11 @@ const ResourceDashboard = () => {
               key={resource} 
               className={`${index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-900' : 'bg-white dark:bg-gray-800'} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`}
             >
-              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-inherit z-10">
+              <td 
+                className={`px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 z-10 ${
+                  index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-900' : 'bg-white dark:bg-gray-800'
+                } hover:bg-gray-100 dark:hover:bg-gray-700`}
+              >
                 {resource}
               </td>
               {sortedRealms.map(realm => (
@@ -571,7 +575,15 @@ const ResourceDashboard = () => {
                       key={unit} 
                       className={`${unitClass} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`}
                     >
-                      <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-inherit z-10">
+                      <td 
+                        className={`px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 z-10 ${
+                          unit.includes('Knight') 
+                            ? 'bg-red-50 dark:bg-red-900/20' 
+                            : unit.includes('Crossbowman') 
+                              ? 'bg-blue-50 dark:bg-blue-900/20' 
+                              : 'bg-green-50 dark:bg-green-900/20'
+                        } hover:bg-gray-100 dark:hover:bg-gray-700`}
+                      >
                         {unit}
                       </td>
                       {sortedRealms.map(realm => (
