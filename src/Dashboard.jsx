@@ -33,11 +33,14 @@ const realmOrder = {
 
 // Check if a resource is a military unit
 const isMilitaryUnit = (resourceName) => {
+  // Normalize the resource name
+  const normalizedName = resourceName.replace(/\s+/g, "");
+  
   return [
     "Knight", "KnightT2", "KnightT3",
     "Crossbowman", "CrossbowmanT2", "CrossbowmanT3",
     "Paladin", "PaladinT2", "PaladinT3"
-  ].includes(resourceName);
+  ].includes(normalizedName);
 };
 
 const ResourceDashboard = () => {
@@ -83,6 +86,12 @@ const ResourceDashboard = () => {
     return Array.from(resourceSet);
   }, [gameData]);
 
+  // Helper function to normalize resource names for comparison
+  const normalizeResourceName = (name) => {
+    // Remove spaces and convert to the format used in resourceOrder
+    return name.replace(/\s+/g, "");
+  };
+
   // Sort resources according to the defined order
   const sortedResources = useMemo(() => {
     // Return empty array if no resources
@@ -93,8 +102,12 @@ const ResourceDashboard = () => {
     
     // First, sort all resources based on the predefined order
     resources.sort((a, b) => {
-      const aIndex = resourceOrder.indexOf(a);
-      const bIndex = resourceOrder.indexOf(b);
+      // Normalize resource names to match the format in resourceOrder
+      const aNormalized = normalizeResourceName(a);
+      const bNormalized = normalizeResourceName(b);
+      
+      const aIndex = resourceOrder.indexOf(aNormalized);
+      const bIndex = resourceOrder.indexOf(bNormalized);
       
       // Both resources are in the predefined order
       if (aIndex !== -1 && bIndex !== -1) {
@@ -279,8 +292,12 @@ const ResourceDashboard = () => {
     // If sorting by resource name, apply resource order
     if (sortConfig.key === 'resource') {
       resources.sort((a, b) => {
-        const aIndex = resourceOrder.indexOf(a);
-        const bIndex = resourceOrder.indexOf(b);
+        // Normalize resource names to match the format in resourceOrder
+        const aNormalized = normalizeResourceName(a);
+        const bNormalized = normalizeResourceName(b);
+        
+        const aIndex = resourceOrder.indexOf(aNormalized);
+        const bIndex = resourceOrder.indexOf(bNormalized);
         
         // Both resources are in the predefined order
         if (aIndex !== -1 && bIndex !== -1) {
