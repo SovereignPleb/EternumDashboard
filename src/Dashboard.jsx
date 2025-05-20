@@ -461,11 +461,11 @@ const ResourceDashboard = () => {
 
   const renderResourcesTable = () => (
     <div className="overflow-auto max-h-[70vh]">
-      <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
-        <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0 z-10">
+      <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden table-fixed">
+        <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0 z-20">
           <tr>
             <th 
-              className="px-4 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 text-left sticky left-0 top-0 bg-gray-100 dark:bg-gray-700 z-20"
+              className="px-4 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 text-left sticky left-0 top-0 bg-gray-100 dark:bg-gray-700 z-30 w-48"
               onClick={() => handleSort('resource')}
             >
               Resource {sortConfig.key === 'resource' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
@@ -494,9 +494,9 @@ const ResourceDashboard = () => {
               className={`${index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-900' : 'bg-white dark:bg-gray-800'} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`}
             >
               <td 
-                className={`px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 z-10 ${
+                className={`px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 z-20 ${
                   index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-900' : 'bg-white dark:bg-gray-800'
-                } hover:bg-gray-100 dark:hover:bg-gray-700`}
+                } hover:bg-gray-100 dark:hover:bg-gray-700 w-48`}
               >
                 {resource}
               </td>
@@ -549,10 +549,10 @@ const ResourceDashboard = () => {
         
         {/* Military Units Table */}
         <div className="overflow-auto max-h-[70vh] mb-8">
-          <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
-            <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0 z-10">
+          <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden table-fixed">
+            <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0 z-20">
               <tr>
-                <th className="px-4 py-2 text-left sticky left-0 top-0 bg-gray-100 dark:bg-gray-700 z-20">Unit Type</th>
+                <th className="px-4 py-2 text-left sticky left-0 top-0 bg-gray-100 dark:bg-gray-700 z-30 w-48">Unit Type</th>
                 {sortedRealms.map(realm => (
                   <th key={realm.entityId} className="px-4 py-2 text-right">
                     {realm.name}
@@ -576,13 +576,13 @@ const ResourceDashboard = () => {
                       className={`${unitClass} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`}
                     >
                       <td 
-                        className={`px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 z-10 ${
+                        className={`px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 z-20 ${
                           unit.includes('Knight') 
                             ? 'bg-red-50 dark:bg-red-900/20' 
                             : unit.includes('Crossbowman') 
                               ? 'bg-blue-50 dark:bg-blue-900/20' 
                               : 'bg-green-50 dark:bg-green-900/20'
-                        } hover:bg-gray-100 dark:hover:bg-gray-700`}
+                        } hover:bg-gray-100 dark:hover:bg-gray-700 w-48`}
                       >
                         {unit}
                       </td>
