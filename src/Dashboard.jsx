@@ -64,12 +64,10 @@ const ResourceDashboard = () => {
     return order;
   }, [allRealms]);
 
-  // Sort realms by their order
+  // Sort realms alphabetically by default
   const sortedRealms = useMemo(() => {
-    return [...allRealms].sort((a, b) => 
-      (realmOrder[a.name] || 999) - (realmOrder[b.name] || 999)
-    );
-  }, [allRealms, realmOrder]);
+    return [...allRealms].sort((a, b) => a.name.localeCompare(b.name));
+  }, [allRealms]);
 
   // Get all unique resource names from the data
   const allResources = useMemo(() => {
@@ -402,8 +400,7 @@ const ResourceDashboard = () => {
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
       <h2 className="text-xl font-bold mb-4">Enter Game Data</h2>
       <p className="mb-4 text-gray-600 dark:text-gray-400">
-        Open Companion UI. Click FETCH. Copy JSON. Paste JSON below.
-        The data should be an array of realms, with each realm having a name, entityId, and a resources array.
+        Paste your JSON data below. The data should be an array of realms, with each realm having a name, entityId, and a resources array.
       </p>
       
       <div className="flex space-x-2 mb-4">
