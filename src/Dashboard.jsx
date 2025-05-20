@@ -8,14 +8,14 @@ const resourceOrder = [
   "Crossbowman", "CrossbowmanT2", "CrossbowmanT3",
   "Paladin", "PaladinT2", "PaladinT3",
   // Transportation
-  "Donkey",
+  "Donkey", "AncientFragment",
   // Basic resources (in natural order)
   "Wood", "Stone", "Coal", "Copper", "Obsidian", "Silver", "Ironwood", 
   "ColdIron", "Gold", "Hartwood", "Diamonds", "Sapphire", "Ruby", 
   "DeepCrystal", "Ignium", "EtherealSilica", "TrueIce", "TwilightQuartz", 
   "AlchemicalSilver", "Adamantine", "Mithral", "Dragonhide",
   // Others
-  "Lords", "Labor", "AncientFragment", "Wheat", "Fish"
+  "Lords", "Labor", "Wheat", "Fish"
 ];
 
 // Check if a resource is a military unit
