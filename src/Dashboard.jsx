@@ -400,7 +400,7 @@ const ResourceDashboard = () => {
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
       <h2 className="text-xl font-bold mb-4">Enter Game Data</h2>
       <p className="mb-4 text-gray-600 dark:text-gray-400">
-        Paste your JSON data below. The data should be an array of realms, with each realm having a name, entityId, and a resources array.
+        Open Companion UI. Click Fetch Data. Copy JSON text. Paste JSON text below. Press Load Data. 
       </p>
       
       <div className="flex space-x-2 mb-4">
