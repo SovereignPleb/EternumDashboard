@@ -115,7 +115,7 @@ const MilitaryUnitsSummary = ({ gameData = [] }) => {
           </thead>
           <tbody>
             <tr className="bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-inherit z-10">Knight</td>
+              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-gray-50 dark:bg-gray-900 z-10">Knight</td>
               <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-right">
                 {formatNumber(militarySummary.Knight.T1)}
               </td>
@@ -130,7 +130,7 @@ const MilitaryUnitsSummary = ({ gameData = [] }) => {
               </td>
             </tr>
             <tr className="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-inherit z-10">Crossbowman</td>
+              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-white dark:bg-gray-800 z-10">Crossbowman</td>
               <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-right">
                 {formatNumber(militarySummary.Crossbowman.T1)}
               </td>
@@ -145,7 +145,7 @@ const MilitaryUnitsSummary = ({ gameData = [] }) => {
               </td>
             </tr>
             <tr className="bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-inherit z-10">Paladin</td>
+              <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-gray-50 dark:bg-gray-900 z-10">Paladin</td>
               <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 text-right">
                 {formatNumber(militarySummary.Paladin.T1)}
               </td>
