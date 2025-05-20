@@ -1,8 +1,429 @@
 import React, { useState, useMemo } from 'react';
 import MilitaryUnitsSummary from './components/MilitaryUnitsSummary';
-import { gameData } from './gameData';
+// Import gameData from Dashboard.jsx directly since it's defined here
 
-// Define a standardized resource order
+// This would normally be fetched from an API
+const gameData = [
+  {
+    "entityId": 763,
+    "name": "Nutnutnutnil",
+    "resources": [
+      {
+        "name": "Stone",
+        "totalAmount": 1500,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Coal",
+        "totalAmount": 1652,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Wood",
+        "totalAmount": 2750,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Copper",
+        "totalAmount": 100001,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Ironwood",
+        "totalAmount": 124970,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Obsidian",
+        "totalAmount": 65832,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Silver",
+        "totalAmount": 94826,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Diamonds",
+        "totalAmount": 51551,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Hartwood",
+        "totalAmount": 29430,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Sapphire",
+        "totalAmount": 13723,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Donkey",
+        "totalAmount": 1684,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Crossbowman",
+        "totalAmount": 2781,
+        "hasReachedMaxCapacity": false
+      }
+    ]
+  },
+  {
+    "entityId": 634,
+    "name": "it-Pus",
+    "resources": [
+      {
+        "name": "Stone",
+        "totalAmount": 81992,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Coal",
+        "totalAmount": 157250,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Wood",
+        "totalAmount": 73608,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Copper",
+        "totalAmount": 46930,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Ironwood",
+        "totalAmount": 743,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Obsidian",
+        "totalAmount": 79673,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Gold",
+        "totalAmount": 4,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Ruby",
+        "totalAmount": 4128,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Diamonds",
+        "totalAmount": 105160,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Hartwood",
+        "totalAmount": 98804,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Ignium",
+        "totalAmount": 14777,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Donkey",
+        "totalAmount": 84,
+        "hasReachedMaxCapacity": false
+      }
+    ]
+  },
+  {
+    "entityId": 2593,
+    "name": "Ukum Säl",
+    "resources": [
+      {
+        "name": "Stone",
+        "totalAmount": 100002,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Coal",
+        "totalAmount": 36574,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Copper",
+        "totalAmount": 36978,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Obsidian",
+        "totalAmount": 89345,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Ignium",
+        "totalAmount": 4966,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Donkey",
+        "totalAmount": 1031,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Crossbowman",
+        "totalAmount": 1000,
+        "hasReachedMaxCapacity": false
+      }
+    ]
+  },
+  {
+    "entityId": 715,
+    "name": "Nangpen",
+    "resources": [
+      {
+        "name": "Stone",
+        "totalAmount": 3000,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Coal",
+        "totalAmount": 2250,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Wood",
+        "totalAmount": 3750,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Copper",
+        "totalAmount": 750,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Obsidian",
+        "totalAmount": 750,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Silver",
+        "totalAmount": 2250,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Ruby",
+        "totalAmount": 91671,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Diamonds",
+        "totalAmount": 4715,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Sapphire",
+        "totalAmount": 111407,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Donkey",
+        "totalAmount": 344,
+        "hasReachedMaxCapacity": false
+      }
+    ]
+  },
+  {
+    "entityId": 2599,
+    "name": "Lismáksisté",
+    "resources": [
+      {
+        "name": "Stone",
+        "totalAmount": 1500,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Coal",
+        "totalAmount": 3000,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Wood",
+        "totalAmount": 1500,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Copper",
+        "totalAmount": 2250,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Ironwood",
+        "totalAmount": 52985,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Obsidian",
+        "totalAmount": 3000,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Gold",
+        "totalAmount": 13424,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Silver",
+        "totalAmount": 3000,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Diamonds",
+        "totalAmount": 750,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Sapphire",
+        "totalAmount": 750,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Donkey",
+        "totalAmount": 2540,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "KnightT2",
+        "totalAmount": 500,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Paladin",
+        "totalAmount": 100,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "PaladinT2",
+        "totalAmount": 250,
+        "hasReachedMaxCapacity": false
+      }
+    ]
+  },
+  {
+    "entityId": 691,
+    "name": "Oolusoolip",
+    "resources": [
+      {
+        "name": "Stone",
+        "totalAmount": 33238,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Coal",
+        "totalAmount": 7277,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Wood",
+        "totalAmount": 53104,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Copper",
+        "totalAmount": 85933,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Obsidian",
+        "totalAmount": 205004,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Donkey",
+        "totalAmount": 1144,
+        "hasReachedMaxCapacity": false
+      }
+    ]
+  },
+  {
+    "entityId": 709,
+    "name": "Chozhdukzhor",
+    "resources": [
+      {
+        "name": "Gold",
+        "totalAmount": 266094,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Hartwood",
+        "totalAmount": 12548,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Donkey",
+        "totalAmount": 1154,
+        "hasReachedMaxCapacity": false
+      }
+    ]
+  },
+  {
+    "entityId": 643,
+    "name": "Kokmrukmom",
+    "resources": [
+      {
+        "name": "Stone",
+        "totalAmount": 21881,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Coal",
+        "totalAmount": 852,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Copper",
+        "totalAmount": 50855,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Obsidian",
+        "totalAmount": 1,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Gold",
+        "totalAmount": 28117,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Silver",
+        "totalAmount": 52143,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Donkey",
+        "totalAmount": 1157,
+        "hasReachedMaxCapacity": false
+      },
+      {
+        "name": "Paladin",
+        "totalAmount": 2935,
+        "hasReachedMaxCapacity": false
+      }
+    ]
+  },
+  {
+    "entityId": 3489,
+    "name": "pu-Muhmuh",
+    "resources": [
+      {
+        "name": "Donkey",
+        "totalAmount": 1364,
+        "hasReachedMaxCapacity": false
+      }
+    ]
+  }
+];
 const resourceOrder = [
   // Military
   "Knight", "KnightT2", "KnightT3",
