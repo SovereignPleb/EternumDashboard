@@ -477,7 +477,6 @@ const ResourceDashboard = () => {
                 onClick={() => handleSort(realm.name)}
               >
                 {realm.name} {sortConfig.key === realm.name && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
-                <div className="text-xs text-gray-500">({realmOrder[realm.name]})</div>
               </th>
             ))}
             <th 
@@ -553,7 +552,6 @@ const ResourceDashboard = () => {
                 {sortedRealms.map(realm => (
                   <th key={realm.entityId} className="px-4 py-2 text-right">
                     {realm.name}
-                    <div className="text-xs text-gray-500">({realmOrder[realm.name]})</div>
                   </th>
                 ))}
                 <th className="px-4 py-2 text-right font-bold">Total</th>
