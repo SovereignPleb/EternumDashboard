@@ -460,7 +460,7 @@ const ResourceDashboard = () => {
   );
 
   const renderResourcesTable = () => (
-    <div className="overflow-x-auto">
+    <div className="overflow-auto max-h-[70vh]">
       <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
         <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0 z-10">
           <tr>
@@ -544,11 +544,11 @@ const ResourceDashboard = () => {
         <MilitaryUnitsSummary gameData={gameData} />
         
         {/* Military Units Table */}
-        <div className="overflow-x-auto mb-8">
+        <div className="overflow-auto max-h-[70vh] mb-8">
           <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
-            <thead className="bg-gray-100 dark:bg-gray-700">
+            <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-2 text-left">Unit Type</th>
+                <th className="px-4 py-2 text-left sticky left-0 top-0 bg-gray-100 dark:bg-gray-700 z-20">Unit Type</th>
                 {sortedRealms.map(realm => (
                   <th key={realm.entityId} className="px-4 py-2 text-right">
                     {realm.name}
@@ -571,7 +571,7 @@ const ResourceDashboard = () => {
                       key={unit} 
                       className={`${unitClass} hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors`}
                     >
-                      <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium">
+                      <td className="px-4 py-2 border-t border-gray-200 dark:border-gray-700 font-medium sticky left-0 bg-inherit z-10">
                         {unit}
                       </td>
                       {sortedRealms.map(realm => (
